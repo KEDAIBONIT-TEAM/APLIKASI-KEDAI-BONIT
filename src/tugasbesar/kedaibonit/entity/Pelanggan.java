@@ -85,21 +85,7 @@ public class Pelanggan {
         return true;
     }
 
-    public String getNamaPelanggan() {
-        return namapelanggan;
-    }
     
-    public void setNamaPelanggan(String namapelanggan) {
-        this.namapelanggan = namapelanggan;
-    }
-
-    public String getNohp() {
-        return nomorhp;
-    }
-    
-    public void setNohp(String nomorhp) {
-        this.nomorhp = nomorhp;
-    }
     
     
     

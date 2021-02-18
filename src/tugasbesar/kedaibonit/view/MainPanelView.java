@@ -17,20 +17,32 @@ import tugasbesar.kedaibonit.event.PelangganListener;
 import tugasbesar.kedaibonit.model.PelangganModel;
 import tugasbesar.kedaibonit.model.TabelPelangganModel;
 import java.sql.SQLException;
+import tugasbesar.kedaibonit.controller.CatatUtangController;
 import tugasbesar.kedaibonit.database.KedaiBonitDatabase;
+import tugasbesar.kedaibonit.entity.CatatUtang;
+import tugasbesar.kedaibonit.error.CatatUtangException;
+import tugasbesar.kedaibonit.event.CatatUtangListener;
+import tugasbesar.kedaibonit.model.CatatUtangModel;
+import tugasbesar.kedaibonit.model.TabelCatatUtangModel;
+import tugasbesar.kedaibonit.service.CatatUtangDao;
 import tugasbesar.kedaibonit.service.PelangganDao;
 
 /**
  *
  * @author CarakaMR
  */
-public class MainPanelView extends javax.swing.JPanel implements PelangganListener, ListSelectionListener {
+public class MainPanelView extends javax.swing.JPanel implements PelangganListener, ListSelectionListener, CatatUtangListener {
 
     private TabelPelangganModel tabelModel;
     private PelangganModel model;
     private PelangganController controller;
+    private TabelCatatUtangModel tabelModelCU;
+    private CatatUtangModel modelCU;
+    private CatatUtangController controllerCU;
+    
     
     public MainPanelView() {
+        
         tabelModel = new TabelPelangganModel();
         
         model = new PelangganModel();
@@ -39,12 +51,60 @@ public class MainPanelView extends javax.swing.JPanel implements PelangganListen
         controller = new PelangganController();
         controller.setModel(model);
         
+        tabelModelCU = new TabelCatatUtangModel();
+        
+        modelCU = new CatatUtangModel();
+        modelCU.setListener(this);
+        
+        controllerCU = new CatatUtangController();
+        controllerCU.setModel(modelCU);
+        
         initComponents();
+        
+        tableCatatUtang.getSelectionModel().addListSelectionListener(this);
         
         tablePelanggan.getSelectionModel().addListSelectionListener(this);
         
         tablePelanggan.setModel(tabelModel);
+        
+        tableCatatUtang.setModel(tabelModelCU);
     }
+
+    
+
+    public JTable getTableCatatUtang() {
+        return tableCatatUtang;
+    }
+
+    public JTextField getTxtIDCU() {
+        return txtIDCU;
+    }
+
+    public JTextField getTxtJatuhTempoCU() {
+        return txtJatuhTempoCU;
+    }
+
+    public JTextField getTxtNamaCU() {
+        return txtNamaCU;
+    }
+
+    public JTextField getTxtNominalCU() {
+        return txtNominalCU;
+    }
+
+    public JTextField getTxtStatusBayarCU() {
+        return txtStatusBayarCU;
+    }
+
+    public JTextField getTxtTglUtangCU() {
+        return txtTglUtangCU;
+    }
+    public JTextField getTxtNamaBarangCU() {
+        return txtNamaBarangCU;
+    }
+
+    
+    
 
     public JTable getTablePelanggan() {
         return tablePelanggan;
@@ -105,6 +165,25 @@ public class MainPanelView extends javax.swing.JPanel implements PelangganListen
         btnUbah = new javax.swing.JButton();
         catatutangView = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
+        jLabel20 = new javax.swing.JLabel();
+        jLabel21 = new javax.swing.JLabel();
+        txtIDCU = new javax.swing.JTextField();
+        txtJatuhTempoCU = new javax.swing.JTextField();
+        txtTglUtangCU = new javax.swing.JTextField();
+        txtNamaCU = new javax.swing.JTextField();
+        txtNamaBarangCU = new javax.swing.JTextField();
+        txtStatusBayarCU = new javax.swing.JTextField();
+        txtNominalCU = new javax.swing.JTextField();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tableCatatUtang = new javax.swing.JTable();
+        btnResetCU = new javax.swing.JButton();
+        btnSimpanCU = new javax.swing.JButton();
+        btnUbahCU = new javax.swing.JButton();
         bayarutangView = new javax.swing.JPanel();
         jLabel14 = new javax.swing.JLabel();
 
@@ -273,7 +352,7 @@ public class MainPanelView extends javax.swing.JPanel implements PelangganListen
             .addGroup(dashboardViewLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel8)
-                .addContainerGap(643, Short.MAX_VALUE))
+                .addContainerGap(706, Short.MAX_VALUE))
         );
 
         mainPanel.add(dashboardView, "card2");
@@ -385,7 +464,7 @@ public class MainPanelView extends javax.swing.JPanel implements PelangganListen
                     .addComponent(txtNoHp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(40, 40, 40)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 144, Short.MAX_VALUE)
                 .addGroup(datapelangganViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnReset)
                     .addComponent(btnSimpan)
@@ -400,21 +479,180 @@ public class MainPanelView extends javax.swing.JPanel implements PelangganListen
         jLabel13.setFont(new java.awt.Font("Times New Roman", 1, 48)); // NOI18N
         jLabel13.setText("CATAT UTANG");
 
+        jLabel15.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel15.setText("ID  :");
+
+        jLabel16.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel16.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel16.setText("NAMA PELANGGAN  :");
+
+        jLabel17.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel17.setText("TANGGAL BER-UTANG  :");
+
+        jLabel18.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel18.setText("NAMA BARANG  :");
+
+        jLabel19.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel19.setText("NOMINAL (Rp)  :");
+
+        jLabel20.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel20.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel20.setText("JATUH TEMPO  :");
+
+        jLabel21.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel21.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel21.setText("STATUS BAYAR  :");
+
+        txtIDCU.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtIDCUActionPerformed(evt);
+            }
+        });
+
+        txtNamaCU.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNamaCUActionPerformed(evt);
+            }
+        });
+
+        txtNamaBarangCU.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNamaBarangCUActionPerformed(evt);
+            }
+        });
+
+        tableCatatUtang.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(tableCatatUtang);
+
+        btnResetCU.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        btnResetCU.setText("RESET");
+        btnResetCU.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnResetCUActionPerformed(evt);
+            }
+        });
+
+        btnSimpanCU.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        btnSimpanCU.setText("SIMPAN");
+        btnSimpanCU.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSimpanCUActionPerformed(evt);
+            }
+        });
+
+        btnUbahCU.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        btnUbahCU.setText("UBAH");
+        btnUbahCU.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUbahCUActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout catatutangViewLayout = new javax.swing.GroupLayout(catatutangView);
         catatutangView.setLayout(catatutangViewLayout);
         catatutangViewLayout.setHorizontalGroup(
             catatutangViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(catatutangViewLayout.createSequentialGroup()
-                .addGap(233, 233, 233)
-                .addComponent(jLabel13)
-                .addContainerGap(259, Short.MAX_VALUE))
+                .addGap(250, 250, 250)
+                .addComponent(btnResetCU)
+                .addGap(60, 60, 60)
+                .addComponent(btnSimpanCU)
+                .addGap(54, 54, 54)
+                .addComponent(btnUbahCU)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, catatutangViewLayout.createSequentialGroup()
+                .addGroup(catatutangViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(catatutangViewLayout.createSequentialGroup()
+                        .addGap(233, 233, 233)
+                        .addComponent(jLabel13))
+                    .addGroup(catatutangViewLayout.createSequentialGroup()
+                        .addGap(54, 54, 54)
+                        .addGroup(catatutangViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(catatutangViewLayout.createSequentialGroup()
+                                .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtNamaCU, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(catatutangViewLayout.createSequentialGroup()
+                                .addGroup(catatutangViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(catatutangViewLayout.createSequentialGroup()
+                                        .addGroup(catatutangViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(jLabel17, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(jLabel20, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addGroup(catatutangViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(txtTglUtangCU)
+                                            .addComponent(txtJatuhTempoCU, javax.swing.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGroup(catatutangViewLayout.createSequentialGroup()
+                                        .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(txtIDCU, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(142, 142, 142)))
+                                .addGroup(catatutangViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabel18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(catatutangViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(txtNamaBarangCU)
+                    .addComponent(txtNominalCU)
+                    .addComponent(txtStatusBayarCU, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE))
+                .addGap(71, 71, 71))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, catatutangViewLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2)
+                .addContainerGap())
         );
         catatutangViewLayout.setVerticalGroup(
             catatutangViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(catatutangViewLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel13)
-                .addContainerGap(643, Short.MAX_VALUE))
+                .addGap(66, 66, 66)
+                .addGroup(catatutangViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel15)
+                    .addComponent(jLabel18)
+                    .addComponent(txtIDCU, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtNamaBarangCU, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(32, 32, 32)
+                .addGroup(catatutangViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel16)
+                    .addComponent(txtNamaCU, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(8, 8, 8)
+                .addGroup(catatutangViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel19)
+                    .addComponent(txtNominalCU, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(3, 3, 3)
+                .addGroup(catatutangViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel17)
+                    .addComponent(txtTglUtangCU, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(43, 43, 43)
+                .addGroup(catatutangViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel20)
+                    .addComponent(jLabel21)
+                    .addComponent(txtJatuhTempoCU, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtStatusBayarCU, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(76, 76, 76)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(52, 52, 52)
+                .addGroup(catatutangViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnResetCU)
+                    .addComponent(btnSimpanCU)
+                    .addComponent(btnUbahCU))
+                .addContainerGap(99, Short.MAX_VALUE))
         );
 
         mainPanel.add(catatutangView, "card4");
@@ -438,7 +676,7 @@ public class MainPanelView extends javax.swing.JPanel implements PelangganListen
             .addGroup(bayarutangViewLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel14)
-                .addContainerGap(643, Short.MAX_VALUE))
+                .addContainerGap(706, Short.MAX_VALUE))
         );
 
         mainPanel.add(bayarutangView, "card5");
@@ -542,6 +780,30 @@ public class MainPanelView extends javax.swing.JPanel implements PelangganListen
         controller.updatePelanggan(this);
     }//GEN-LAST:event_btnUbahActionPerformed
 
+    private void btnResetCUActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetCUActionPerformed
+        controllerCU.resetCatatUtang(this);
+    }//GEN-LAST:event_btnResetCUActionPerformed
+
+    private void btnSimpanCUActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpanCUActionPerformed
+        controllerCU.insertCatatUtang(this);
+    }//GEN-LAST:event_btnSimpanCUActionPerformed
+
+    private void btnUbahCUActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUbahCUActionPerformed
+        controllerCU.updateCatatUtang(this);
+    }//GEN-LAST:event_btnUbahCUActionPerformed
+
+    private void txtNamaBarangCUActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNamaBarangCUActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNamaBarangCUActionPerformed
+
+    private void txtNamaCUActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNamaCUActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNamaCUActionPerformed
+
+    private void txtIDCUActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIDCUActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtIDCUActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel bayarutangView;
@@ -552,8 +814,11 @@ public class MainPanelView extends javax.swing.JPanel implements PelangganListen
     private javax.swing.JButton btnDataPelanggan;
     private javax.swing.JButton btnKeluar;
     private javax.swing.JButton btnReset;
+    private javax.swing.JButton btnResetCU;
     private javax.swing.JButton btnSimpan;
+    private javax.swing.JButton btnSimpanCU;
     private javax.swing.JButton btnUbah;
+    private javax.swing.JButton btnUbahCU;
     private javax.swing.JPanel catatutangView;
     private javax.swing.JPanel dashboardView;
     private javax.swing.JPanel datapelangganView;
@@ -563,7 +828,14 @@ public class MainPanelView extends javax.swing.JPanel implements PelangganListen
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -572,12 +844,21 @@ public class MainPanelView extends javax.swing.JPanel implements PelangganListen
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JPanel menuPanel;
+    private javax.swing.JTable tableCatatUtang;
     private javax.swing.JTable tablePelanggan;
+    private javax.swing.JTextField txtIDCU;
     private javax.swing.JTextField txtId;
+    private javax.swing.JTextField txtJatuhTempoCU;
+    private javax.swing.JTextField txtNamaBarangCU;
+    private javax.swing.JTextField txtNamaCU;
     private javax.swing.JTextField txtNamaPelanggan;
     private javax.swing.JTextField txtNoHp;
+    private javax.swing.JTextField txtNominalCU;
+    private javax.swing.JTextField txtStatusBayarCU;
+    private javax.swing.JTextField txtTglUtangCU;
     // End of variables declaration//GEN-END:variables
 
     @Override
@@ -598,19 +879,62 @@ public class MainPanelView extends javax.swing.JPanel implements PelangganListen
         tabelModel.set(index, pelanggan);
     }
 
+   
+     @Override
+    public void onChangeCU(CatatUtangModel model) {
+        txtId.setText(model.getIdcu()+"");
+        txtNamaCU.setText(model.getNamacu());
+        txtTglUtangCU.setText(model.getTanggalBerutang());
+        txtNamaBarangCU.setText(model.getNamaBarang());
+        txtNominalCU.setText(model.getNominal());
+        txtJatuhTempoCU.setText(model.getJatuhTempo());
+        txtStatusBayarCU.setText(model.getStatusbayar());
+        
+    }
+
+    @Override
+    public void onInsertCU(CatatUtang catatUtang) {
+        tabelModelCU.add(catatUtang);
+    }
+
+    @Override
+    public void onUpdateCU(CatatUtang catatUtang) {
+        int index = tableCatatUtang.getSelectedRow();
+        tabelModelCU.set(index, catatUtang);
+    }
+
     @Override
     public void valueChanged(ListSelectionEvent e) {
-        try {
-            Pelanggan model = tabelModel.get(tablePelanggan.getSelectedRow());
-            txtId.setText(model.getId()+"");
-            txtNamaPelanggan.setText(model.getNamaPelanggan());
-            txtNoHp.setText(model.getNohp());
-        } catch (IndexOutOfBoundsException exception) {
-        }
-    }
+      try {
+        Pelanggan model = tabelModel.get(tablePelanggan.getSelectedRow());
+        CatatUtang modelcu = tabelModelCU.get(tableCatatUtang.getSelectedRow());
+        txtId.setText(model.getId()+"");
+        txtNamaPelanggan.setText(model.getNamapelanggan());
+        txtNoHp.setText(model.getNomorhp());
+        txtIDCU.setText(modelcu.getIdCU());
+        txtNamaCU.setText(modelcu.getNamacu());
+        txtTglUtangCU.setText(modelcu.getTanggalBerutang());
+        txtNamaBarangCU.setText(modelcu.getNamaBarang());
+        txtNominalCU.setText(modelcu.getNominal());
+        txtJatuhTempoCU.setText(modelcu.getJatuhTempo());
+        txtStatusBayarCU.setText(modelcu.getStatusBayar());
+    } catch (IndexOutOfBoundsException exception) {
     
-    public void loadDatabase() throws SQLException, PelangganException{
-        PelangganDao dao = KedaiBonitDatabase.getPelangganDao();
-        tabelModel.setList(dao.selectAllPelanggan());
-    }
+  }
+    
+     
 }
+    
+    public void loadDatabase() throws SQLException, PelangganException, CatatUtangException {
+        PelangganDao dao = KedaiBonitDatabase.getPelangganDao();
+        CatatUtangDao daocu = KedaiBonitDatabase.getCatatUtangDao();
+        tabelModel.setList(dao.selectAllPelanggan());
+        tabelModelCU.setList(daocu.selectAllUtang());
+        
+    }
+
+    
+   
+    
+}
+

@@ -6,7 +6,11 @@
 package tugasbesar.kedaibonit.view;
 
 import java.sql.SQLException;
+import tugasbesar.kedaibonit.database.KedaiBonitDatabase;
+import tugasbesar.kedaibonit.error.CatatUtangException;
 import tugasbesar.kedaibonit.error.PelangganException;
+import tugasbesar.kedaibonit.service.CatatUtangDao;
+import tugasbesar.kedaibonit.service.PelangganDao;
 
 /**
  *
@@ -21,10 +25,12 @@ public class MainView extends javax.swing.JFrame {
         initComponents();
     }
 
-    public void loadDatabase() throws SQLException, PelangganException {
+    public void loadDatabase() throws SQLException, PelangganException, CatatUtangException {
         mainPanelView2.loadDatabase();
     }
+
     
+
     
 
     /**
@@ -44,17 +50,17 @@ public class MainView extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(mainPanelView2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(mainPanelView2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();

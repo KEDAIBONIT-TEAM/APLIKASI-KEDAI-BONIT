@@ -8,7 +8,9 @@ package tugasbesar.kedaibonit.database;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import tugasbesar.kedaibonit.impl.CatatUtangDaoImpl;
 import tugasbesar.kedaibonit.impl.PelangganDaoImpl;
+import tugasbesar.kedaibonit.service.CatatUtangDao;
 import tugasbesar.kedaibonit.service.PelangganDao;
 /**
  *
@@ -18,6 +20,7 @@ public class KedaiBonitDatabase {
     
     private static Connection connection;
     private static PelangganDao pelangganDao;
+    private static CatatUtangDao catatUtangDao;
     
     public static Connection getConnection() throws SQLException {
         if(connection==null) {
@@ -40,6 +43,14 @@ public class KedaiBonitDatabase {
         }
         
         return pelangganDao;
+    }
+    
+    public static CatatUtangDao getCatatUtangDao() throws SQLException {
+        
+        if (catatUtangDao==null) {
+            catatUtangDao = new CatatUtangDaoImpl(getConnection());
+        }
+        return catatUtangDao;
     }
     
 }
