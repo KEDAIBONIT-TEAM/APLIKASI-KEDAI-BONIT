@@ -38,7 +38,7 @@ public class CatatUtangController {
             JOptionPane.showMessageDialog(view, "ID Dan Nama Tidak Boleh Kosong");
         } else if (namaPelanggan.length()>255) {
             JOptionPane.showMessageDialog(view, "Nama Tidak Boleh Lebih Dari 255 Karakter");
-        } else if (!statusBayar.contains("Lunas")|| statusBayar.contains("Belum Lunas")) {
+        } else if (!statusBayar.contains("Lunas")||!statusBayar.contains("Belum Lunas")) {
             JOptionPane.showMessageDialog(view, "Status Bayar Tidak Valid");
           
         } else {
@@ -79,8 +79,6 @@ public class CatatUtangController {
             JOptionPane.showMessageDialog(view, "ID Dan Nama Tidak Boleh Kosong");
         } else if (namaPelanggan.length()>255) {
             JOptionPane.showMessageDialog(view, "Nama Tidak Boleh Lebih Dari 255 Karakter");
-        } else if (!statusBayar.contains("Lunas")||!statusBayar.contains("Belum Lunas")) {
-            JOptionPane.showMessageDialog(view, "Status Bayar Tidak Valid");
         } else {
             modelcu.setIdcu(idcu);
             modelcu.setNamacu(namaPelanggan);

@@ -31,7 +31,10 @@ public class PelangganController {
         String nama    = view.getTxtNamaPelanggan().getText();
         String telepon = view.getTxtNoHp().getText();
         
-         if (nama.length()>255) {
+        
+        if (nama.trim().equals("")) {
+            JOptionPane.showMessageDialog(view, "ID Dan Nama Tidak Boleh Kosong");
+        } else if (nama.length()>255) {
             JOptionPane.showMessageDialog(view, "Nama Tidak Boleh Lebih Dari 255 Karakter");
         }else if (telepon.length()>12) {
             JOptionPane.showMessageDialog(view, "Nomor Telepon Tidak Boleh Lebih Dari 12 Digit");
